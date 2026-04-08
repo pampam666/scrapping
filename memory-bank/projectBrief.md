@@ -35,3 +35,11 @@ Arsitektur notebook harus modular per cell agar alur mudah dikontrol:
 - Login manual berhasil dilakukan tanpa gangguan script.
 - Setelah ENTER, data dari halaman authenticated berhasil diekstrak.
 - File CSV hasil scraping terbentuk rapi, UTF-8, tanpa baris kosong berlebih.
+
+## Final Workspace Structure (Approved)
+- `/.agents/` — AI Skills
+- `/.clinerules/` — Project Rules
+- `/memory-bank/` — AI Context
+- `/data/` — CSV Outputs (`hasil_scraping.csv` target location)
+- `semrush_scraper.ipynb` — Main script notebook (starter scaffold)
+- `requirements.txt` — Python dependencies (`jupyter`, `scrapling`, `playwright`)
