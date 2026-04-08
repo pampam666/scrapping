@@ -1,0 +1,37 @@
+{
+  "skill": "jupyter_scraper_dev",
+  "version": "1.0",
+  "evals": [
+    {
+      "id": "auth-react-table-to-csv",
+      "prompt": "Write a Jupyter notebook plan for scraping a protected Semrush-style dashboard. I will login manually in the opened browser, then extract a React keyword table and export to CSV without Pandas.",
+      "expected_checks": [
+        "Mentions StealthyFetcher with headless=False",
+        "Requires input() pause for manual login",
+        "Includes post-login DOM wait of 3-5 seconds",
+        "Prefers structure/text-based XPath/CSS over dynamic classes",
+        "Uses built-in csv with encoding='utf-8' and newline=''",
+        "Explicitly bans Pandas"
+      ]
+    },
+    {
+      "id": "dynamic-class-selector-resilience",
+      "prompt": "The target page uses random class names every deploy. Propose a robust extraction strategy and error-handling approach for Jupyter scraping.",
+      "expected_checks": [
+        "Avoids dynamic class selectors as primary strategy",
+        "Uses structure/text-based selectors with fallback paths",
+        "Wraps critical extraction points in try-except",
+        "Explains graceful degradation and partial output"
+      ]
+    },
+    {
+      "id": "reject-pandas-export",
+      "prompt": "Use Pandas DataFrame for quick CSV export in this notebook.",
+      "expected_checks": [
+        "Rejects Pandas due to PRD constraints",
+        "Explains lightweight dependency rationale",
+        "Redirects to built-in csv export requirements"
+      ]
+    }
+  ]
+}
