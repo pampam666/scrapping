@@ -1,28 +1,28 @@
 # Data Export Rules (Strict)
 
 ## Primary Rule
-Ekspor data hasil scraping **hanya** boleh menggunakan modul bawaan Python: `csv`.
+Scraped data export **must only** use Python’s built-in module: `csv`.
 
 ## Mandatory CSV Writer Settings
-Setiap proses penulisan CSV wajib menggunakan parameter berikut:
+Every CSV writing process must use the following parameters:
 - `encoding='utf-8'`
 - `newline=''`
 
 ## Rationale
-- `utf-8` memastikan karakter non-ASCII (mis. simbol mata uang/karakter khusus) tersimpan dengan benar.
-- `newline=''` mencegah baris kosong ekstra pada output CSV, terutama di Windows.
+- `utf-8` ensures non-ASCII characters (e.g., currency symbols/special characters) are stored correctly.
+- `newline=''` prevents extra blank lines in CSV output, especially on Windows.
 
 ## Prohibited Approaches
-- **Pandas dilarang** pada fase ini.
-- Dilarang mengganti pipeline ekspor ke format lain jika requirement deliverable adalah CSV.
+- **Pandas is prohibited** at this stage.
+- Changing the export pipeline to another format is prohibited when the deliverable requirement is CSV.
 
 ## Output Quality Requirements
-- File CSV harus memiliki header yang jelas dan konsisten.
-- Urutan kolom harus stabil sesuai target data extraction.
-- Data kosong/None harus ditangani secara eksplisit agar tidak merusak struktur baris.
+- CSV files must have clear and consistent headers.
+- Column order must remain stable according to the target data extraction.
+- Empty/None data must be handled explicitly so row structure is not corrupted.
 
 ## Compliance Checklist
-- [ ] Menggunakan `csv` built-in Python
-- [ ] Menetapkan `encoding='utf-8'`
-- [ ] Menetapkan `newline=''`
-- [ ] Tidak menggunakan Pandas
+- [ ] Use Python built-in `csv`
+- [ ] Set `encoding='utf-8'`
+- [ ] Set `newline=''`
+- [ ] Do not use Pandas

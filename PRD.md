@@ -6,60 +6,60 @@
 ---
 
 ## 1. Project Overview
-Proyek ini bertujuan untuk mengembangkan skrip web scraping interaktif berbasis Jupyter Notebook yang mampu mengekstrak data dari halaman web yang dilindungi oleh sistem autentikasi dan *anti-bot* yang ketat. Hasil akhir dari ekstraksi data harus disimpan ke dalam format file `.csv`. 
+This project aims to develop an interactive Jupyter Notebook-based web scraping script capable of extracting data from web pages protected by strict authentication and *anti-bot* systems. The final output of data extraction must be saved in `.csv` file format.
 
-Karena ketatnya keamanan target, pendekatan *fully-automated login* tidak digunakan. Sebagai gantinya, sistem akan menggunakan pendekatan *semi-automated* di mana skrip akan membuka browser, menunda eksekusi untuk memungkinkan *user* melakukan login manual dan menyelesaikan Captcha, sebelum akhirnya melanjutkan proses ekstraksi DOM.
+Due to the strict security of the target, a *fully-automated login* approach is not used. Instead, the system will use a *semi-automated* approach where the script opens the browser, pauses execution to allow the *user* to log in manually and complete Captcha, then proceeds with the DOM extraction process.
 
 ## 2. Technology Stack
-Agen AI (Cline.bot) diwajibkan menggunakan tumpukan teknologi berikut:
+The AI agent (Cline.bot) is required to use the following technology stack:
 * **Environment:** Jupyter Notebook (`.ipynb`)
 * **Language:** Python 3.8+
 * **Core Scraping Library:** `scrapling` (GitHub: D4Vinci/Scrapling)
-* **Browser Automation:** `playwright` (sebagai dependensi dari Scrapling)
+* **Browser Automation:** `playwright` (as a dependency of Scrapling)
 * **Data Export:** `csv` (Python built-in module)
 
 ## 3. Functional Requirements
 
 ### 3.1. Notebook Structure (Cell Layout)
-Jupyter Notebook harus dibagi menjadi beberapa sel (*cells*) yang logis agar pengguna dapat mengontrol alur eksekusi:
-* **Cell 1: Environment Setup.** Menginstal dependensi (`!pip install scrapling`, `!playwright install`).
-* **Cell 2: Module Imports & Initialization.** Mengimpor pustaka dan mendefinisikan fungsi utilitas.
-* **Cell 3: Browser Launch & Authentication Phase.** Membuka browser dalam mode visual dan menahan eksekusi menunggu input pengguna.
-* **Cell 4: Data Extraction Phase.** Melakukan *parsing* HTML (menggunakan XPath/CSS) setelah pengguna mengonfirmasi status login.
-* **Cell 5: CSV Export & Cleanup.** Menyimpan data ke disk dan menutup *instance* browser.
+The Jupyter Notebook must be divided into logical *cells* so users can control the execution flow:
+* **Cell 1: Environment Setup.** Install dependencies (`!pip install scrapling`, `!playwright install`).
+* **Cell 2: Module Imports & Initialization.** Import libraries and define utility functions.
+* **Cell 3: Browser Launch & Authentication Phase.** Open the browser in visual mode and pause execution while waiting for user input.
+* **Cell 4: Data Extraction Phase.** Perform HTML *parsing* (using XPath/CSS) after the user confirms login status.
+* **Cell 5: CSV Export & Cleanup.** Save data to disk and close the browser *instance*.
 
 ### 3.2. Browser & Stealth Configuration
-* Wajib menggunakan kelas `StealthyFetcher` dari pustaka `scrapling`.
-* Parameter browser **wajib** disetel ke mode visual: `headless=False`. Hal ini krusial agar pengguna dapat melihat antarmuka web dan melakukan login.
+* Must use the `StealthyFetcher` class from the `scrapling` library.
+* Browser parameters **must** be set to visual mode: `headless=False`. This is crucial so users can see the web interface and perform login.
 
 ### 3.3. Manual Authentication Handling
-* Sistem harus melakukan navigasi ke URL target awal.
-* Gunakan fungsi `input()` pada Python untuk menghentikan sementara (pause) eksekusi sel. Skrip harus mencetak instruksi yang jelas ke layar yang meminta pengguna untuk login secara manual di browser yang terbuka, dan menekan `ENTER` di notebook setelah halaman data (dashboard) termuat sepenuhnya.
+* The system must navigate to the initial target URL.
+* Use Python's `input()` function to temporarily pause cell execution. The script must print clear on-screen instructions asking the user to log in manually in the opened browser, and press `ENTER` in the notebook after the data page (dashboard) has fully loaded.
 
 ### 3.4. Data Extraction & Resilience
-* Sistem harus menangani *dynamic class names* (misal: CSS *modules* / *styled-components* yang menghasilkan *class* acak seperti `sc-abc kXyZ`). 
-* Diutamakan menggunakan **XPath** yang mencari elemen berdasarkan struktur atau teks (contoh: `//div[contains(text(), 'Target')]`), bukan bergantung pada nama *class* yang bisa berubah sewaktu-waktu.
-* Sistem harus menyertakan blok `try-except` untuk mencegah skrip *crash* (*graceful degradation*) jika struktur tabel web berubah sebagian.
+* The system must handle *dynamic class names* (e.g., CSS *modules* / *styled-components* that generate random classes such as `sc-abc kXyZ`).
+* Prioritize using **XPath** that locates elements by structure or text (example: `//div[contains(text(), 'Target')]`), instead of relying on class names that may change at any time.
+* The system must include `try-except` blocks to prevent script *crashes* (*graceful degradation*) if the web table structure partially changes.
 
 ### 3.5. Data Export (CSV)
-* Data hasil ekstrak harus disimpan menggunakan modul `csv` bawaan Python.
-* Pastikan file diatur dengan parameter `encoding='utf-8'` dan `newline=''` untuk menghindari karakter aneh (misalnya pada simbol mata uang atau *intent keyword*) dan mencegah baris kosong berlebih di sistem operasi Windows.
-* Struktur Data (Contoh Target Data Tabel):
-    * Kolom 1: Keyword
-    * Kolom 2: Position
-    * Kolom 3: Volume
-    * Kolom 4: KD (Keyword Difficulty)
+* Extracted data must be saved using Python's built-in `csv` module.
+* Ensure the file is configured with `encoding='utf-8'` and `newline=''` to avoid strange characters (for example in currency symbols or *intent keywords*) and prevent extra blank lines on Windows.
+* Data Structure (Example Target Table Data):
+    * Column 1: Keyword
+    * Column 2: Position
+    * Column 3: Volume
+    * Column 4: KD (Keyword Difficulty)
 
 ## 4. Non-Functional Requirements
-* **State Management:** Pastikan *instance* `StealthyFetcher` dideklarasikan secara global atau dikelola sedemikian rupa agar sesi browser tidak tertutup saat berpindah antar-sel (*cell*) di Jupyter Notebook.
-* **Rate Limiting:** Jika skrip dirancang untuk mengunjungi banyak halaman (paginasi), wajib menyertakan jeda waktu acak (`time.sleep()`) antar *request* untuk menghindari blokir dari *anti-bot*.
+* **State Management:** Ensure the `StealthyFetcher` *instance* is declared globally or managed in such a way that the browser session does not close when moving between Jupyter Notebook *cells*.
+* **Rate Limiting:** If the script is designed to visit many pages (pagination), it must include randomized delays (`time.sleep()`) between *requests* to avoid being blocked by *anti-bot* systems.
 
 ## 5. Acceptance Criteria (Definition of Done)
-1.  Jupyter Notebook berhasil dijalankan tanpa error di lingkungan lokal.
-2.  Sel eksekusi berhasil memunculkan Chromium browser (bukan headless).
-3.  Pengguna berhasil melakukan login manual tanpa diganggu oleh skrip.
-4.  Setelah pengguna menekan ENTER, skrip berhasil mengekstrak *node* HTML dari halaman yang dilindungi *auth*.
-5.  File `hasil_scraping.csv` terbuat di direktori lokal dengan format *header* dan baris data yang rapi dan benar (mendukung karakter UTF-8).
+1.  Jupyter Notebook runs successfully without errors in the local environment.
+2.  The execution cell successfully opens a Chromium browser (not headless).
+3.  The user can complete manual login without script interference.
+4.  After the user presses ENTER, the script successfully extracts HTML *nodes* from the *auth*-protected page.
+5.  The `hasil_scraping.csv` file is created in the local directory with correct, clean *header* and row formatting (UTF-8 compatible).
 
 ## 6. Developer Notes for Cline.bot
 * *Do not use Pandas for this iteration.* Keep dependencies lightweight by using the built-in `csv` module.

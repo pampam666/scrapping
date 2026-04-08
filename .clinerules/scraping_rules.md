@@ -1,31 +1,31 @@
 # Scraping Rules (Resilience-First)
 
 ## Selector Strategy (Mandatory)
-Untuk website dengan class dinamis (React/CSS modules/styled-components), selector harus memprioritaskan:
-1. XPath/CSS berbasis **struktur DOM**
-2. XPath/CSS berbasis **teks/label stabil**
+For websites with dynamic classes (React/CSS modules/styled-components), selectors must prioritize:
+1. **DOM structure-based** XPath/CSS
+2. **Stable text/label-based** XPath/CSS
 
 ### Strictly Discouraged
-- Jangan mengandalkan class name acak/dinamis sebagai selector utama.
-- Hindari selector rapuh yang bergantung pada urutan elemen yang mudah berubah.
+- Do not rely on random/dynamic class names as the primary selector.
+- Avoid fragile selectors that depend on easily changing element order.
 
 ## Error Handling Requirement
-Setiap tahap ekstraksi penting wajib dibungkus `try-except` agar:
-- script tidak crash total saat sebagian elemen gagal ditemukan,
-- proses tetap menghasilkan output parsial yang dapat dipakai,
-- kegagalan dapat dilaporkan secara jelas (graceful degradation).
+Each important extraction stage must be wrapped in `try-except` so that:
+- the script does not fully crash when some elements cannot be found,
+- the process still produces usable partial output,
+- failures can be reported clearly (graceful degradation).
 
 ## Manual Auth Compatibility
-- Scraping baru boleh berjalan setelah gerbang autentikasi manual (`input()`) dilewati.
-- Setelah ENTER dari user, wajib beri waktu rendering 3–5 detik sebelum parsing halaman.
+- Scraping may proceed only after the manual authentication gate (`input()`) is passed.
+- After the user presses ENTER, a 3–5 second render wait is mandatory before parsing the page.
 
 ## Robustness Principles
-- Gunakan fallback selector jika selector utama gagal.
-- Validasi keberadaan node sebelum akses atribut/teks.
-- Logging status ekstraksi per bagian untuk memudahkan debugging saat layout berubah.
+- Use fallback selectors if the primary selector fails.
+- Validate node existence before accessing attributes/text.
+- Log extraction status per section to simplify debugging when the layout changes.
 
 ## Compliance Checklist
-- [ ] Selector berbasis struktur/teks digunakan
-- [ ] Tidak bergantung pada class dinamis sebagai strategi utama
-- [ ] Blok `try-except` diterapkan pada titik rawan gagal
-- [ ] Flow kompatibel dengan autentikasi manual + jeda render DOM
+- [ ] Structure/text-based selectors are used
+- [ ] Does not rely on dynamic classes as the primary strategy
+- [ ] `try-except` blocks are applied at failure-prone points
+- [ ] Flow is compatible with manual authentication + DOM render delay

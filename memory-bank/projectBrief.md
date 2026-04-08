@@ -1,40 +1,47 @@
 # Project Brief: Authenticated Web Scraper to CSV via Jupyter Notebook
 
 ## Project Goal
-Membangun workspace untuk proyek scraping interaktif berbasis **Jupyter Notebook** yang mampu mengambil data dari situs dengan proteksi autentikasi/anti-bot tinggi (contoh: Semrush), lalu mengekspor hasilnya ke file **CSV**.
+Build a workspace for an interactive **Jupyter Notebook**-based scraping project that can retrieve data from websites with strong authentication/anti-bot protection (example: Semrush), then export the results to a **CSV** file.
 
-Pendekatan yang diwajibkan adalah **semi-automated**:
-- Browser dibuka dalam mode visual (bukan headless).
-- Pengguna melakukan login manual dan menangani captcha bila diperlukan.
-- Notebook menunggu konfirmasi pengguna melalui `input()` sebelum lanjut ke ekstraksi data.
+The required approach is **semi-automated**:
+- The browser is opened in visual mode (not headless).
+- The user performs manual login and handles captcha if needed.
+- The notebook waits for user confirmation via `input()` before proceeding to data extraction.
 
 ## Architectural Direction (PRD-Aligned)
-Arsitektur notebook harus modular per cell agar alur mudah dikontrol:
-1. **Environment Setup** – instalasi dependency (`scrapling`, `playwright`).
-2. **Imports & Initialization** – inisialisasi modul/fungsi bantu.
-3. **Browser Launch & Authentication** – jalankan browser visual dengan `StealthyFetcher` dan pause untuk login manual.
-4. **Extraction Phase** – parsing halaman setelah login, fokus ke selector robust.
-5. **CSV Export & Cleanup** – simpan data via built-in `csv`, lalu tutup resource browser.
+The notebook architecture must be modular per cell so the flow is easy to control:
+1. **Environment Setup** – install dependencies (`scrapling`, `playwright`).
+2. **Imports & Initialization** – initialize modules/helper functions.
+3. **Browser Launch & Authentication** – run a visual browser with `StealthyFetcher` and pause for manual login.
+4. **Extraction Phase** – parse the page after login, focusing on robust selectors.
+5. **CSV Export & Cleanup** – save data via built-in `csv`, then close browser resources.
 
 ## Key Technical Principles
-- Wajib menggunakan `StealthyFetcher` dengan `headless=False`.
-- Ekstraksi elemen harus memprioritaskan **XPath/CSS berbasis struktur/teks**, bukan class dinamis acak.
-- Wajib ada `try-except` untuk graceful degradation saat struktur DOM berubah.
-- Export data hanya menggunakan modul built-in `csv` dengan:
+- Must use `StealthyFetcher` with `headless=False`.
+- Element extraction must prioritize **structure/text-based XPath/CSS**, not random dynamic classes.
+- `try-except` is mandatory for graceful degradation when DOM structure changes.
+- Data export must only use the built-in `csv` module with:
   - `encoding='utf-8'`
   - `newline=''`
 
 ## Explicit Constraints
-- **Tidak boleh menggunakan Pandas** pada iterasi ini.
-- Setelah user menekan ENTER pasca login, perlu jeda render DOM (`time.sleep(3)` hingga `5` detik) sebelum ekstraksi.
-- Sesi browser perlu dikelola agar tidak terputus antar cell notebook.
+- **Pandas must not be used** in this iteration.
+- After the user presses ENTER post-login, add a DOM render delay (`time.sleep(3)` to `5` seconds) before extraction.
+- The browser session must be managed so it is not interrupted across notebook cells.
+
+## Skill Hierarchy (Authority Rules)
+- `.agents/skills/scrapling-official/` is strictly for API/syntax/examples reference ONLY.
+- For architectural and workflow decisions (notebook cell split, manual authentication flow, browser lifecycle persistence, CSV export behavior), the agent MUST follow:
+  - `.agents/skills/jupyter-scrapper-dev/`
+  - `.clinerules/` (including scraping rules, data export rules, and workflow rules)
+- If any guidance conflicts, `jupyter-scrapper-dev` + `.clinerules` take precedence over `scrapling-official`.
 
 ## Definition of Done (High-Level)
-- Notebook berjalan lokal tanpa error.
-- Browser visual muncul (non-headless).
-- Login manual berhasil dilakukan tanpa gangguan script.
-- Setelah ENTER, data dari halaman authenticated berhasil diekstrak.
-- File CSV hasil scraping terbentuk rapi, UTF-8, tanpa baris kosong berlebih.
+- Notebook runs locally without errors.
+- Visual browser appears (non-headless).
+- Manual login succeeds without script interference.
+- After ENTER, data from the authenticated page is extracted successfully.
+- The scraping CSV file is generated cleanly, UTF-8 encoded, without excessive blank lines.
 
 ## Final Workspace Structure (Approved)
 - `/.agents/` — AI Skills
